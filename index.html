@@ -577,6 +577,112 @@
             transform: translateX(-50%) translateY(0);
             opacity: 1;
         }
+
+        /* 新版官网提示弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .modal-text {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .modal-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .modal-link:hover {
+            text-decoration: underline;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .modal-btn-close {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .modal-btn-close:hover {
+            background: #e0e0e0;
+        }
+
+        .modal-btn-jump {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .modal-btn-jump:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .modal-btn-jump:active {
+            transform: scale(0.95);
+        }
     </style>
 <base target="_blank">
 
@@ -602,6 +708,22 @@ var _hmt = _hmt || [];
 </script>
 </head>
 <body>
+    <!-- 新版官网提示弹窗 -->
+    <div class="modal-overlay" id="newVersionModal">
+        <div class="modal">
+            <div class="modal-icon">🎉</div>
+            <div class="modal-title">新版官网已上线</div>
+            <div class="modal-text">
+                新的官网已经准备就绪，点击跳转新版官网<br>
+                <a href="https://jxm747.pages.dev" class="modal-link" target="_blank">jxm747.pages.dev</a>
+            </div>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-close" onclick="closeModal()">关闭</button>
+                <button class="modal-btn modal-btn-jump" onclick="jumpToNewVersion()">立即跳转</button>
+            </div>
+        </div>
+    </div>
+
     <div class="particles">
         <div class="particle"></div>
         <div class="particle"></div>
@@ -734,6 +856,23 @@ var _hmt = _hmt || [];
     <div class="toast" id="toast">已复制到剪贴板！</div>
 
     <script>
+        // 页面加载时显示弹窗
+        window.onload = function() {
+            setTimeout(function() {
+                document.getElementById('newVersionModal').classList.add('show');
+            }, 500);
+        };
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('newVersionModal').classList.remove('show');
+        }
+
+        // 跳转到新版官网
+        function jumpToNewVersion() {
+            window.open('https://jxm747.pages.dev', '_blank');
+        }
+
         function copyGameUrl() {
             const url = document.getElementById('gameUrl').href;
             const btn = document.getElementById('copyGameBtn');
