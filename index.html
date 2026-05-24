@@ -578,7 +578,7 @@
             opacity: 1;
         }
 
-        /* 新版官网提示弹窗 */
+        /* 弹窗遮罩层 */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -600,87 +600,125 @@
             visibility: visible;
         }
 
-        .modal {
+        /* 弹窗内容 */
+        .modal-content {
             background: white;
             border-radius: 20px;
             padding: 30px;
-            max-width: 400px;
+            max-width: 450px;
             width: 90%;
-            text-align: center;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
         }
 
-        .modal-overlay.show .modal {
+        .modal-overlay.show .modal-content {
             transform: scale(1);
         }
 
-        .modal-icon {
-            font-size: 48px;
-            margin-bottom: 15px;
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         .modal-title {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: 700;
             color: #333;
-            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .modal-text {
-            font-size: 14px;
-            color: #666;
+        .modal-body {
             margin-bottom: 25px;
-            line-height: 1.6;
         }
 
-        .modal-link {
+        .modal-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #e8ecff;
+        }
+
+        .modal-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-item-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .modal-item-icon.github {
+            background: linear-gradient(135deg, #333 0%, #666 100%);
+        }
+
+        .modal-item-icon.cloudflare {
+            background: linear-gradient(135deg, #f48120 0%, #fbab18 100%);
+        }
+
+        .modal-item-icon.other {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .modal-item-content {
+            flex: 1;
+        }
+
+        .modal-item-label {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .modal-item-link {
+            font-size: 14px;
             color: #667eea;
             text-decoration: none;
-            font-weight: 500;
+            word-break: break-all;
+            transition: color 0.3s ease;
         }
 
-        .modal-link:hover {
+        .modal-item-link:hover {
+            color: #764ba2;
             text-decoration: underline;
         }
 
-        .modal-buttons {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
+        .modal-footer {
+            text-align: center;
         }
 
         .modal-btn {
-            padding: 12px 24px;
+            padding: 12px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
             border-radius: 25px;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: none;
         }
 
-        .modal-btn-close {
-            background: #f0f0f0;
-            color: #666;
-        }
-
-        .modal-btn-close:hover {
-            background: #e0e0e0;
-        }
-
-        .modal-btn-jump {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .modal-btn-jump:hover {
+        .modal-btn:hover {
             transform: scale(1.05);
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
-        .modal-btn-jump:active {
+        .modal-btn:active {
             transform: scale(0.95);
         }
     </style>
@@ -708,22 +746,6 @@ var _hmt = _hmt || [];
 </script>
 </head>
 <body>
-    <!-- 新版官网提示弹窗 -->
-    <div class="modal-overlay" id="newVersionModal">
-        <div class="modal">
-            <div class="modal-icon">🎉</div>
-            <div class="modal-title">新版官网已上线</div>
-            <div class="modal-text">
-                新的官网已经准备就绪，点击跳转新版官网<br>
-                <a href="https://jxm747.pages.dev" class="modal-link" target="_blank">jxm747.pages.dev</a>
-            </div>
-            <div class="modal-buttons">
-                <button class="modal-btn modal-btn-close" onclick="closeModal()">关闭</button>
-                <button class="modal-btn modal-btn-jump" onclick="jumpToNewVersion()">立即跳转</button>
-            </div>
-        </div>
-    </div>
-
     <div class="particles">
         <div class="particle"></div>
         <div class="particle"></div>
@@ -855,23 +877,75 @@ var _hmt = _hmt || [];
 
     <div class="toast" id="toast">已复制到剪贴板！</div>
 
+    <!-- 三大官网网址互通弹窗 -->
+    <div class="modal-overlay" id="officialModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>🌐</span>
+                    <span>三大官网网址互通</span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-item">
+                    <div class="modal-item-icon github">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="white">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </div>
+                    <div class="modal-item-content">
+                        <div class="modal-item-label">GitHub官网</div>
+                        <a href="https://jxm747.github.io/webpage" target="_blank" class="modal-item-link">
+                            jxm747.github.io/webpage
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-item">
+                    <div class="modal-item-icon cloudflare">
+                        ☁️
+                    </div>
+                    <div class="modal-item-content">
+                        <div class="modal-item-label">Cloudflare官网</div>
+                        <a href="https://jxm747.page.dev" target="_blank" class="modal-item-link">
+                            jxm747.page.dev
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-item">
+                    <div class="modal-item-icon other">🔗</div>
+                    <div class="modal-item-content">
+                        <div class="modal-item-label">其他官网</div>
+                        <a href="https://share.htmlput.com/p/n47nuugxdy?lang=zh" target="_blank" class="modal-item-link">
+                            share.htmlput.com/p/n47nuugxdy
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn" onclick="closeModal()">我知道了</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 页面加载时显示弹窗
         window.onload = function() {
             setTimeout(function() {
-                document.getElementById('newVersionModal').classList.add('show');
+                document.getElementById('officialModal').classList.add('show');
             }, 500);
         };
 
         // 关闭弹窗
         function closeModal() {
-            document.getElementById('newVersionModal').classList.remove('show');
+            document.getElementById('officialModal').classList.remove('show');
         }
 
-        // 跳转到新版官网
-        function jumpToNewVersion() {
-            window.open('https://jxm747.pages.dev', '_blank');
-        }
+        // 点击遮罩层关闭弹窗
+        document.getElementById('officialModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
 
         function copyGameUrl() {
             const url = document.getElementById('gameUrl').href;
